@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:untitled/view/todo_card.dart';
+import 'package:untitled/view/todo_page.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -116,17 +118,19 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.45,
-                  child: PageView.builder(
-                    itemCount: 3,
+                  child: PageView(
+                    pageSnapping: true,
+                    children: [
+                      generateCard(0),
+                      generateCard(1),
+                      generateCard(2)
+                    ],
                     controller: PageController(viewportFraction: 0.7),
                     onPageChanged: (int index) {
                       setState(() {
                         _index = index;
                         animationController.animateTo(index / colors.length);
                       });
-                    },
-                    itemBuilder: (_, i) {
-                      return generateCard(_index);
                     },
                   ),
                 ),
@@ -143,13 +147,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     var task = [8, 5, 7];
     var percentage = [0.83, 0.56, 0.39];
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Get.to(const TODOPage(),
+            transition: Transition.downToUp,
+            duration: const Duration(milliseconds: 500));
+      },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
         child: TODOCard(
-            percentage: percentage[index],
-            title: title[index],
-            task: task[index]),
+          percentage: percentage[index],
+          title: title[index],
+          task: task[index],
+        ),
       ),
     );
   }

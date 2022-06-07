@@ -10,8 +10,11 @@ class TODOPage extends StatefulWidget {
 }
 
 class _TODOPageState extends State<TODOPage> {
+  TextEditingController _textFieldController = TextEditingController();
+  String newTask = "";
+  String newTaskText = "";
   List<Widget> list = [];
-  bool _value = false;
+  List<bool> _value = [];
   var argument = Get.arguments;
   bool isLoading = true;
 
@@ -62,11 +65,19 @@ class _TODOPageState extends State<TODOPage> {
             ),
           ),
           Expanded(
-            child: isLoading ? CircularProgressIndicator() : ListView(
-              children: list,
-            ),
+            child: isLoading
+                ? CircularProgressIndicator()
+                : ListView(
+                    children: list,
+                  ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _displayTextInputDialog(context);
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
@@ -81,21 +92,52 @@ class _TODOPageState extends State<TODOPage> {
       "Design meeting",
       "Quick prototyping"
     ];
+    _value = [false, false, false, false, false, false];
 
     for (int i = 0; i < tasks; i++) {
-      list.add(Padding(
-        padding: EdgeInsets.fromLTRB(32, 12, 0, 0),
-        child: CheckboxListTile(
-          value: _value,
-          onChanged: (value) {
-            setState(() {
-              _value = value ?? false;
-            });
-          },
-          title: Text(todos[i]),
+      list.add(
+        Padding(
+          padding: EdgeInsets.fromLTRB(32, 12, 0, 0),
+          child: CheckboxListTile(
+            value: _value[i],
+            onChanged: (value) {
+              setState(
+                () {
+                  _value[i] = value ?? false;
+                },
+              );
+            },
+            title: Text(todos[i]),
+          ),
         ),
-      ));
+      );
     }
     setState(() => isLoading = false);
+  }
+
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Add new task"),
+          content: TextField(
+            onChanged: (value) {
+              setState(() => newTaskText = value);
+            },
+            controller: _textFieldController,
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                setState(() => newTask = newTaskText);
+                Navigator.pop(context);
+              },
+              child: Text("Add"),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

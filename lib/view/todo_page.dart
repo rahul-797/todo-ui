@@ -95,49 +95,50 @@ class _TODOPageState extends State<TODOPage> {
     _value = [false, false, false, false, false, false];
 
     for (int i = 0; i < tasks; i++) {
-      list.add(
-        Padding(
-          padding: EdgeInsets.fromLTRB(32, 12, 0, 0),
-          child: CheckboxListTile(
-            value: _value[i],
-            onChanged: (value) {
-              setState(
-                () {
-                  _value[i] = value ?? false;
-                },
-              );
-            },
-            title: Text(todos[i]),
-          ),
+      list.add(Padding(
+        padding: EdgeInsets.fromLTRB(32, 12, 0, 0),
+        child: CheckboxListTile(
+          value: _value[i],
+          onChanged: (value) {
+            setState(() {
+              _value[i] = value ?? false;
+            });
+          },
+          title: Text(todos[i]),
         ),
-      );
+      ));
     }
     setState(() => isLoading = false);
   }
 
   Future<void> _displayTextInputDialog(BuildContext context) async {
     return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Add new task"),
-          content: TextField(
-            onChanged: (value) {
-              setState(() => newTaskText = value);
-            },
-            controller: _textFieldController,
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                setState(() => newTask = newTaskText);
-                Navigator.pop(context);
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Add new task"),
+            content: TextField(
+              onChanged: (value) {
+                setState(() => newTaskText = value);
               },
-              child: Text("Add"),
+              controller: _textFieldController,
+              decoration: InputDecoration(hintText: "Task"),
             ),
-          ],
-        );
-      },
-    );
+            actions: [
+              ElevatedButton(
+                child: Text("Add"),
+                onPressed: () {
+                  setState(() => newTask = newTaskText);
+                  Navigator.pop(context);
+                  Future.delayed(
+                      Duration(seconds: 1),
+                      () => Get.snackbar(
+                          "$newTask added", 'Successfully added new task',
+                          snackPosition: SnackPosition.BOTTOM));
+                },
+              ),
+            ],
+          );
+        });
   }
 }

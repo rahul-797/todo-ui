@@ -11,6 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+
   int _index = 0;
   late AnimationController animationController;
   late Animation<Color?> animation;
@@ -144,13 +145,16 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   Widget generateCard(int index) {
     var title = ["Personal", "Work", "Extra"];
-    var task = [8, 5, 7];
-    var percentage = [0.83, 0.56, 0.39];
+    var task = [6, 3, 2];
+    var percentage = [0.62, 0.33, 0.50];
     return GestureDetector(
       onTap: () {
-        Get.to(const TODOPage(),
-            transition: Transition.downToUp,
-            duration: const Duration(milliseconds: 500));
+        Get.to(
+          () => TODOPage(),
+          arguments: [title[index], task[index], percentage[index]],
+          duration: Duration(milliseconds: 300),
+          transition: Transition.downToUp
+        );
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
